@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../core/models/app_generation_session.dart';
+import '../../../../../core/models/app_generation_session.dart';
 
 class BuildStatusView extends StatelessWidget {
   final BuildStage currentStage;

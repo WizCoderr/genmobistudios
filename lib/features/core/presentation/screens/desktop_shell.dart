@@ -1,12 +1,43 @@
 import 'package:flutter/material.dart';
 import '../../../../core/constants/app_colors.dart';
-import 'generation_view.dart';
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+class DesktopShell extends StatefulWidget {
+  final Widget child;
+  
+  const DesktopShell({super.key, required this.child});
+
+  @override
+  State<DesktopShell> createState() => _DesktopShellState();
+}
+
+class _DesktopShellState extends State<DesktopShell> {
+  int _selectedIndex = 0;
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+
+    switch (index) {
+      case 0:
+        Navigator.pushReplacementNamed(context, '/');
+        break;
+      case 1:
+        Navigator.pushReplacementNamed(context, '/new_project');
+        break;
+      case 2:
+        Navigator.pushReplacementNamed(context, '/'); // Using dashboard for "My Projects" for now
+        break;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    // Determine active index based on route, though manual tracking could work
+    final route = ModalRoute.of(context)?.settings.name;
+    if (route == '/') _selectedIndex = 0;
+    if (route == '/new_project') _selectedIndex = 1;
+
     return Scaffold(
       backgroundColor: AppColors.background,
       body: Row(
@@ -16,8 +47,8 @@ class HomeScreen extends StatelessWidget {
             child: Column(
               children: [
                 _buildTopAppBar(context),
-                const Expanded(
-                  child: GenerationView(),
+                Expanded(
+                  child: widget.child,
                 ),
               ],
             ),
@@ -39,18 +70,13 @@ class HomeScreen extends StatelessWidget {
       child: Column(
         children: [
           const SizedBox(height: 24),
-          _sidebarIcon(Icons.grid_view_rounded, isSelected: true),
+          _sidebarIcon(Icons.grid_view_rounded, isSelected: _selectedIndex == 0, onTap: () => _onItemTapped(0)),
           const SizedBox(height: 24),
-          _sidebarIcon(Icons.add_box),
+          _sidebarIcon(Icons.add_box, isSelected: _selectedIndex == 1, onTap: () => _onItemTapped(1)),
           const SizedBox(height: 24),
-          _sidebarIcon(Icons.folder),
+          _sidebarIcon(Icons.folder, isSelected: _selectedIndex == 2, onTap: () => _onItemTapped(2)),
           const SizedBox(height: 24),
-          _sidebarIcon(Icons.ondemand_video),
-          const SizedBox(height: 24),
-          _sidebarIcon(
-            Icons.apps,
-            onTap: () => Navigator.pushNamed(context, '/generated_apps'),
-          ),
+          _sidebarIcon(Icons.ondemand_video, onTap: () => Navigator.pushNamed(context, '/preview')),
           const Spacer(),
           _sidebarIcon(Icons.settings),
           const SizedBox(height: 24),
@@ -144,7 +170,7 @@ class HomeScreen extends StatelessWidget {
           SizedBox(
             height: 36,
             child: ElevatedButton(
-              onPressed: () {},
+              onPressed: () => Navigator.pushNamed(context, '/prompt_panel'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.accent.withOpacity(0.2),
                 foregroundColor: AppColors.accent,

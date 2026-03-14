@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'features/home/presentation/screens/home_screen.dart';
 import 'features/home/presentation/providers/home_provider.dart';
 import 'features/generated_apps/presentation/screens/generated_apps_screen.dart';
 import 'core/constants/app_colors.dart';
+import 'features/core/presentation/screens/desktop_shell.dart';
+import 'features/dashboard/presentation/screens/dashboard_screen.dart';
+import 'features/projects/presentation/screens/new_project_screen.dart';
+import 'features/generation/presentation/screens/prompt_panel_screen.dart';
+import 'features/generation/presentation/screens/agent_activity_screen.dart';
+import 'features/preview/presentation/screens/preview_screen.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -20,22 +25,29 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           useMaterial3: true,
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: AppColors.primary,
+          brightness: Brightness.dark,
+          scaffoldBackgroundColor: AppColors.background,
+          colorScheme: ColorScheme.dark(
+            primary: AppColors.primary,
             background: AppColors.background,
             surface: AppColors.surface,
+            error: AppColors.error,
           ),
-          textTheme: GoogleFonts.plusJakartaSansTextTheme(),
+          textTheme: GoogleFonts.plusJakartaSansTextTheme(ThemeData.dark().textTheme),
           appBarTheme: const AppBarTheme(
-            backgroundColor: Colors.transparent,
+            backgroundColor: AppColors.surface,
             elevation: 0,
             centerTitle: false,
           ),
         ),
         initialRoute: '/',
         routes: {
-          '/': (context) => const HomeScreen(),
-          '/generated_apps': (context) => const GeneratedAppsScreen(),
+          '/': (context) => const DesktopShell(child: DashboardScreen()),
+          '/new_project': (context) => const DesktopShell(child: NewProjectScreen()),
+          '/prompt_panel': (context) => const DesktopShell(child: PromptPanelScreen()),
+          '/agent_activity': (context) => const DesktopShell(child: AgentActivityScreen()),
+          '/preview': (context) => const DesktopShell(child: PreviewScreen()),
+          '/generated_apps': (context) => const GeneratedAppsScreen(), // keep old route mapping just in case
         },
       ),
     );
